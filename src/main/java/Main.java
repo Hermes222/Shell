@@ -16,7 +16,7 @@ public class Main {
         ArrayList<String> shellCommands = new ArrayList<>(List.of("echo"));
 
         if (!command.equals("exit")) {
-            String[] result = checkCommand(command);
+            String[] result = splitCommand(command);
             if(shellCommands.contains(result[0])) {
                 executeShellCommand(result);
             }else {
@@ -25,7 +25,7 @@ public class Main {
             }
         }
     }
-    public static String[] checkCommand(String command) {
+    public static String[] splitCommand(String command) {
         String[] parts = command.split("\\s+", 2);
         String[] result = new String[2];
 
@@ -36,7 +36,7 @@ public class Main {
         return result;
     }
     public static void executeShellCommand(String[] command) {
-        if (command.equals("echo")) {
+        if (command[0].equals("echo")) {
             echoCommand(command[1]);
         }
     }
