@@ -45,6 +45,7 @@ public class Shell {
     public static void type(String[] command) {
         if(shellCommands.contains(command[1])) {
             System.out.println(command[1] +" is a shell builtin");
+            startShellCommand();
         }else{
             commandNotFound(command[1]);
         }
