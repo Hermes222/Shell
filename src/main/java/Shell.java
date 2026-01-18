@@ -20,7 +20,10 @@ public class Shell {
             }
         }
     }
-    public static void commandNotFound(String command) {
+    public static void commandNotFound(String command,Boolean type) {
+        System.out.println(command + ": not found");
+        startShellCommand();
+    }    public static void commandNotFound(String command) {
         System.out.println(command + ": command not found");
         startShellCommand();
     }
@@ -47,7 +50,7 @@ public class Shell {
             System.out.println(command[1] +" is a shell builtin");
             startShellCommand();
         }else{
-            commandNotFound(command[1]);
+            commandNotFound(command[1],true);
         }
     }
     public static void echoCommand(String command) {
