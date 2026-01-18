@@ -3,22 +3,26 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Shell {
+    static ArrayList<String> shellCommands = new ArrayList<>(List.of("echo","type"));
+
     public static void startShellCommand() {
         System.out.print("$ ");
         Scanner input = new Scanner(System.in);
         String command = input.nextLine();
+        String[] result = splitCommand(command);
 
-        ArrayList<String> shellCommands = new ArrayList<>(List.of("echo"));
+        if (!result[0].equals("exit")) {
 
-        if (!command.equals("exit")) {
-            String[] result = splitCommand(command);
             if(shellCommands.contains(result[0])) {
                 executeShellCommand(result);
             }else {
-                System.out.println(command + ": command not found");
-                startShellCommand();
+                commandNotFound(result[0]);
             }
         }
+    }
+    public static void commandNotFound(String command) {
+        System.out.println(command + ": command not found");
+        startShellCommand();
     }
     public static String[] splitCommand(String command) {
         String[] parts = command.split("\\s+", 2);
@@ -33,6 +37,16 @@ public class Shell {
     public static void executeShellCommand(String[] command) {
         if (command[0].equals("echo")) {
             echoCommand(command[1]);
+        }
+        if (command[0].equals("type")) {
+            type(command);
+        }
+    }
+    public static void type(String[] command) {
+        if(shellCommands.contains(command[1])) {
+            System.out.println(command[1] +" is a shell builtin");
+        }else{
+            commandNotFound(command[1]);
         }
     }
     public static void echoCommand(String command) {
