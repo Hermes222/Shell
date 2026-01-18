@@ -5,7 +5,7 @@ public class TypeDirectoryLookUp {
         String path = System.getenv("PATH");
         String[] directories = path.split(File.pathSeparator);
         for (String directoryName : directories) {
-            File directory = new File(directoryName);
+            File directory = new File(directoryName,command);
             if(directory.exists() && directory.canExecute()){
                 System.out.println(command + " is " + directory.getAbsolutePath());
                 Shell.startShellCommand();
