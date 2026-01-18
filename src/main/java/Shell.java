@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Shell {
-    static ArrayList<String> shellCommands = new ArrayList<>(List.of("echo","type"));
+    static ArrayList<String> shellCommands = new ArrayList<>(List.of("echo","type","exit"));
 
     public static void startShellCommand() {
         System.out.print("$ ");
