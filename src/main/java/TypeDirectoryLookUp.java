@@ -11,6 +11,6 @@ public class TypeDirectoryLookUp {
                 Shell.startShellCommand();
             }
         }
-        Shell.commandNotFound(command);
+        Shell.commandNotFound(command,true);
     }
 }
