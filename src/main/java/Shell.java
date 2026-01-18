@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Shell {
-    static ArrayList<String> shellCommands = new ArrayList<>(List.of("echo","type","exit"));
+    static ArrayList<String> shellBuiltinCommands = new ArrayList<>(List.of("echo","type","exit"));
 
     public static void startShellCommand() {
         System.out.print("$ ");
@@ -13,7 +13,7 @@ public class Shell {
 
         if (!result[0].equals("exit")) {
 
-            if(shellCommands.contains(result[0])) {
+            if(shellBuiltinCommands.contains(result[0])) {
                 executeShellCommand(result);
             }else {
                 commandNotFound(result[0]);
@@ -46,11 +46,12 @@ public class Shell {
         }
     }
     public static void type(String[] command) {
-        if(shellCommands.contains(command[1])) {
+        if(shellBuiltinCommands.contains(command[1])) {
             System.out.println(command[1] +" is a shell builtin");
             startShellCommand();
         }else{
-            commandNotFound(command[1],true);
+            TypeDirectoryLookUp lookUp = new TypeDirectoryLookUp();
+            lookUp.getDirectory(command[1]);
         }
     }
     public static void echoCommand(String command) {
