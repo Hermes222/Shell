@@ -1,10 +1,13 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 public class Shell {
-    static ArrayList<String> shellBuiltinCommands = new ArrayList<>(List.of("echo","type","exit","pwd"));
+    static File currentDir = new File(System.getProperty("user.dir"));
+
+    static ArrayList<String> shellBuiltinCommands = new ArrayList<>(List.of("echo","type","exit","pwd","cd"));
 
     public static void startShellCommand() {
         System.out.print("$ ");
@@ -49,12 +52,27 @@ public class Shell {
         }
         if (command[0].equals("pwd")) {
             getPwd();
-
+        }
+        if(command[0].equals("cd")) {
+            cd(command[1]);
         }
     }
 
+    private static void cd(String path) {
+        if(!path.startsWith("/")) {
+            startShellCommand();
+        }
+        File newDir = new File(path);
+        if(newDir.exists() && newDir.isDirectory()) {
+            currentDir = newDir;
+        }else{
+            System.out.println("cd: "+path+": No such file or directory");
+        }
+        startShellCommand();
+    }
+
     private static void getPwd() {
-        String pwd = System.getProperty("user.dir");
+        String pwd = currentDir.getAbsolutePath();
         System.out.println(pwd);
         startShellCommand();
     }
