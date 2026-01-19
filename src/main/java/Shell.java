@@ -25,11 +25,7 @@ public class Shell {
             runExternalCommand(result);
         }
     }
-
-    public static void commandNotFound(String command,Boolean type) {
-        System.out.println(command + ": not found");
-        startShellCommand();
-    }    public static void commandNotFound(String command) {
+    public static void commandNotFound(String command) {
         System.out.println(command + ": command not found");
         startShellCommand();
     }
@@ -44,23 +40,21 @@ public class Shell {
         return result;
     }
     public static void executeShellCommand(String[] command) {
-        if (command[0].equals("echo")) {
-            echoCommand(command[1]);
-        }
-        if (command[0].equals("type")) {
-            type(command);
-        }
-        if (command[0].equals("pwd")) {
-            getPwd();
-        }
-        if(command[0].equals("cd")) {
-            cd(command[1]);
+        String name = command[0];
+        String args = command[1];
+        switch (name) {
+            case "echo" -> echoCommand(args);
+            case "type" -> type(args);
+            case "pwd"  -> getPwd();
+            case "cd"    -> cd(args);
+            default -> commandNotFound(name);
         }
     }
 
     private static void cd(String path) {
         if(!path.startsWith("/")) {
             startShellCommand();
+            return;
         }
         File newDir = new File(path);
         if(newDir.exists() && newDir.isDirectory()) {
@@ -77,14 +71,21 @@ public class Shell {
         startShellCommand();
     }
 
-    public static void type(String[] command) {
-        if(shellBuiltinCommands.contains(command[1])) {
-            System.out.println(command[1] +" is a shell builtin");
+    public static void type(String target) {
+        if(shellBuiltinCommands.contains(target)) {
+            System.out.println(target +" is a shell builtin");
             startShellCommand();
         }else{
             TypeDirectoryLookUp lookUp = new TypeDirectoryLookUp();
-            lookUp.getDirectory(command[1]);
+            String fullPath = lookUp.getDirectory(target);
+            if(fullPath == null) {
+                System.out.println(target + " is " + fullPath);
+            }else{
+                System.out.println(target + ": not found");
+            }
+
         }
+        startShellCommand();
     }
     public static void echoCommand(String command) {
         System.out.println(command);
@@ -100,6 +101,7 @@ public class Shell {
             args.addAll(Arrays.asList(parts));
         }
         ProcessBuilder processBuilder = new ProcessBuilder(args);
+        processBuilder.directory(currentDir);
         processBuilder.inheritIO();
         try{
             Process process = processBuilder.start();

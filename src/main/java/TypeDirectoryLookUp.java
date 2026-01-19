@@ -1,16 +1,18 @@
 import java.io.File;
 
 public class TypeDirectoryLookUp {
-    public void getDirectory(String command) {
+    public String getDirectory(String command) {
         String path = System.getenv("PATH");
+        if (path == null || path.isEmpty()) {
+            return null;
+        }
         String[] directories = path.split(File.pathSeparator);
         for (String directoryName : directories) {
-            File directory = new File(directoryName,command);
-            if(directory.exists() && directory.canExecute()){
-                System.out.println(command + " is " + directory.getAbsolutePath());
-                Shell.startShellCommand();
+            File candidate = new File(directoryName,command);
+            if(candidate.exists() && candidate.canExecute()){
+               return candidate.getAbsolutePath();
             }
         }
-        Shell.commandNotFound(command,true);
+       return null;
     }
 }
