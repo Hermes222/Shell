@@ -13,8 +13,7 @@ public class Shell {
         String[] result = splitCommand(command);
 
         if (result[0].equals("exit")) {
-            // just return — no recursion, no looping
-            return;
+            System.exit(0);
         }
 
         if (shellBuiltinCommands.contains(result[0])) {
@@ -22,8 +21,6 @@ public class Shell {
         } else {
             runExternalCommand(result);
         }
-
-        // For this stage: return, do not call startShellCommand() again
     }
 
     public static void commandNotFound(String command,Boolean type) {
