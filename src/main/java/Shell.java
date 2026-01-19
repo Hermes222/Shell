@@ -47,7 +47,18 @@ public class Shell {
         if (command[0].equals("type")) {
             type(command);
         }
+        if (command[0].equals("pwd")) {
+            getPwd();
+
+        }
     }
+
+    private static void getPwd() {
+        String pwd = System.getProperty("user.dir");
+        System.out.println(pwd);
+        startShellCommand();
+    }
+
     public static void type(String[] command) {
         if(shellBuiltinCommands.contains(command[1])) {
             System.out.println(command[1] +" is a shell builtin");
