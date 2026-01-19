@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Shell {
-    static ArrayList<String> shellBuiltinCommands = new ArrayList<>(List.of("echo","type","exit"));
+    static ArrayList<String> shellBuiltinCommands = new ArrayList<>(List.of("echo","type","exit","pwd"));
 
     public static void startShellCommand() {
         System.out.print("$ ");
