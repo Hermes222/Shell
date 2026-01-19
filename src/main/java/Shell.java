@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,7 +17,7 @@ public class Shell {
             if(shellBuiltinCommands.contains(result[0])) {
                 executeShellCommand(result);
             }else {
-                commandNotFound(result[0]);
+               runExternalCommand(result);
             }
         }
     }
@@ -58,4 +59,29 @@ public class Shell {
         System.out.println(command);
         startShellCommand();
     }
+    public static void runExternalCommand(String[] command) {
+        String program = command[0];
+        String argsString = command[1];
+        List<String> args = new ArrayList<>();
+        args.add(program);
+        if(!argsString.isEmpty()){
+            String[] parts = argsString.split("\\s+");
+            args.addAll(Arrays.asList(parts));
+        }
+        ProcessBuilder processBuilder = new ProcessBuilder(args);
+        processBuilder.inheritIO();
+        try{
+            Process process = processBuilder.start();
+            process.waitFor();
+        }catch (java.io.IOException e){
+            commandNotFound(program);
+        }catch(InterruptedException e){
+            Thread.currentThread().interrupt();
+        }finally {
+            startShellCommand();
+        }
+
+
+    }
+
 }
