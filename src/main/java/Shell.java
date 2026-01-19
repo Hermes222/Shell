@@ -12,15 +12,20 @@ public class Shell {
         String command = input.nextLine();
         String[] result = splitCommand(command);
 
-        if (!result[0].equals("exit")) {
-
-            if(shellBuiltinCommands.contains(result[0])) {
-                executeShellCommand(result);
-            }else {
-               runExternalCommand(result);
-            }
+        if (result[0].equals("exit")) {
+            // just return — no recursion, no looping
+            return;
         }
+
+        if (shellBuiltinCommands.contains(result[0])) {
+            executeShellCommand(result);
+        } else {
+            runExternalCommand(result);
+        }
+
+        // For this stage: return, do not call startShellCommand() again
     }
+
     public static void commandNotFound(String command,Boolean type) {
         System.out.println(command + ": not found");
         startShellCommand();
