@@ -61,7 +61,7 @@ public class Shell {
             target = new File(currentDir, path);
         }
         try{
-            target = target.getParentFile();
+            target = target.getCanonicalFile();
         }catch(Exception e){
             System.out.println("cd: "+path+": No such file or directory");
             startShellCommand();
