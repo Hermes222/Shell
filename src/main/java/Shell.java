@@ -89,7 +89,7 @@ public class Shell {
         }else{
             TypeDirectoryLookUp lookUp = new TypeDirectoryLookUp();
             String fullPath = lookUp.getDirectory(target);
-            if(fullPath == null) {
+            if(fullPath != null) {
                 System.out.println(target + " is " + fullPath);
             }else{
                 System.out.println(target + ": not found");
