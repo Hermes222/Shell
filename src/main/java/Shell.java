@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +59,13 @@ public class Shell {
 
         }else{
             target = new File(currentDir, path);
+        }
+        try{
+            target = target.getParentFile();
+        }catch(Exception e){
+            System.out.println("cd: "+path+": No such file or directory");
+            startShellCommand();
+            return;
         }
 
         if(target.exists() && target.isDirectory()) {
