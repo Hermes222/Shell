@@ -57,6 +57,9 @@ public class Shell {
         if(path.startsWith("/")) {
             target = new File(path);
 
+        }else if(path.startsWith("~")) {
+            String home = System.getenv("HOME");
+            target = new File(home);
         }else{
             target = new File(currentDir, path);
         }
