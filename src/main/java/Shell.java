@@ -52,13 +52,16 @@ public class Shell {
     }
 
     private static void cd(String path) {
-        if(!path.startsWith("/")) {
-            startShellCommand();
-            return;
+        File target;
+        if(path.startsWith("/")) {
+            target = new File(path);
+
+        }else{
+            target = new File(currentDir, path);
         }
-        File newDir = new File(path);
-        if(newDir.exists() && newDir.isDirectory()) {
-            currentDir = newDir;
+
+        if(target.exists() && target.isDirectory()) {
+            currentDir = target;
         }else{
             System.out.println("cd: "+path+": No such file or directory");
         }
