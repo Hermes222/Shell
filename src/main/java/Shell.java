@@ -1,9 +1,10 @@
+import javax.xml.stream.events.Characters;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.lang.*;
 
 public class Shell {
     static File currentDir = new File(System.getProperty("user.dir"));
@@ -14,13 +15,13 @@ public class Shell {
         System.out.print("$ ");
         Scanner input = new Scanner(System.in);
         String command = input.nextLine();
-        String[] result = splitCommand(command);
+        List<String> result = parseCommand(command);
 
-        if (result[0].equals("exit")) {
+        if (result.getFirst().equals("exit")) {
             System.exit(0);
         }
 
-        if (shellBuiltinCommands.contains(result[0])) {
+        if (shellBuiltinCommands.contains(result.getFirst())) {
             executeShellCommand(result);
         } else {
             runExternalCommand(result);
@@ -30,19 +31,33 @@ public class Shell {
         System.out.println(command + ": command not found");
         startShellCommand();
     }
-    public static String[] splitCommand(String command) {
-        String[] parts = command.split("\\s+", 2);
-        String[] result = new String[2];
-
-        String cmd = parts[0];                 // before first space
-        String args = (parts.length > 1) ? parts[1] : "";   // everything after
-        result[0] = cmd;
-        result[1] = args;
+    public static List<String> parseCommand(String command) {
+        List<String> result = new ArrayList<>();
+        Boolean insideQuotes = false;
+        StringBuilder buffer = new StringBuilder();
+        for(int i = 0; i < command.length(); i++) {
+            char c = command.charAt(i);
+            if (c == '\'') {
+                insideQuotes = !insideQuotes;
+                continue;
+            }
+            if (!insideQuotes && Character.isWhitespace(c)) {
+                if(!buffer.isEmpty()) {
+                    result.add(buffer.toString());
+                    buffer.setLength(0);
+                }
+                continue;
+            }
+         buffer.append(c);
+        }
+        if(!buffer.isEmpty()) {
+            result.add(buffer.toString());
+        }
         return result;
     }
-    public static void executeShellCommand(String[] command) {
-        String name = command[0];
-        String args = command[1];
+    public static void executeShellCommand(List<String> command) {
+        String name = command.getFirst();
+        List<String> args = command.subList(1, command.size());
         switch (name) {
             case "echo" -> echoCommand(args);
             case "type" -> type(args);
@@ -52,7 +67,8 @@ public class Shell {
         }
     }
 
-    private static void cd(String path) {
+    private static void cd(List<String> pathList) {
+        String path = pathList.getFirst();
         File target;
         if(path.startsWith("/")) {
             target = new File(path);
@@ -85,7 +101,8 @@ public class Shell {
         startShellCommand();
     }
 
-    public static void type(String target) {
+    public static void type(List<String> targetOrig) {
+        String target = targetOrig.getFirst();
         if(shellBuiltinCommands.contains(target)) {
             System.out.println(target +" is a shell builtin");
             startShellCommand();
@@ -101,20 +118,17 @@ public class Shell {
         }
         startShellCommand();
     }
-    public static void echoCommand(String command) {
-        System.out.println(command);
+    public static void echoCommand(List<String> command) {
+        System.out.println(String.join(" ", command));
         startShellCommand();
     }
-    public static void runExternalCommand(String[] command) {
-        String program = command[0];
-        String argsString = command[1];
-        List<String> args = new ArrayList<>();
-        args.add(program);
-        if(!argsString.isEmpty()){
-            String[] parts = argsString.split("\\s+");
-            args.addAll(Arrays.asList(parts));
+    public static void runExternalCommand(List<String> args) {
+        if (args.isEmpty()) {
+            startShellCommand();
+            return;
         }
-        ProcessBuilder processBuilder = new ProcessBuilder(args);
+        String program = args.getFirst();
+        ProcessBuilder processBuilder = new ProcessBuilder(new ArrayList<>(args));
         processBuilder.directory(currentDir);
         processBuilder.inheritIO();
         try{
