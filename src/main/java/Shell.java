@@ -33,15 +33,24 @@ public class Shell {
     }
     public static List<String> parseCommand(String command) {
         List<String> result = new ArrayList<>();
-        Boolean insideQuotes = false;
+        boolean inSingleQuotes = false;
+        boolean inDoubleQuotes = false;
         StringBuilder buffer = new StringBuilder();
         for(int i = 0; i < command.length(); i++) {
             char c = command.charAt(i);
             if (c == '\'') {
-                insideQuotes = !insideQuotes;
-                continue;
+                if(!inDoubleQuotes) {
+                    inSingleQuotes = !inSingleQuotes;
+                    continue;
+                }
             }
-            if (!insideQuotes && Character.isWhitespace(c)) {
+            if (c == '\"') {
+                if(!inSingleQuotes) {
+                    inDoubleQuotes = !inDoubleQuotes;
+                    continue;
+                }
+            }
+            if (!inSingleQuotes && !inDoubleQuotes && Character.isWhitespace(c)) {
                 if(!buffer.isEmpty()) {
                     result.add(buffer.toString());
                     buffer.setLength(0);
